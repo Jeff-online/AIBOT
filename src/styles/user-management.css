@@ -1,0 +1,437 @@
+:root {
+    --primary-color: #5bc0de;
+    --primary-hover: #339abf;
+    --border-color: #e0e0e0;
+    --bg-light: #f9f9f9;
+    --bg-sidebar: #f4f4f4;
+    --text-color: #555;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-light);
+}
+
+.user-management-container {
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+h1 {
+    color: var(--text-color);
+    margin: 0;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+/* 搜索区域布局 */
+.search-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 0px;  /* 减少底部间距 */
+    align-items: flex-end;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--bg-light);
+}
+
+/* 搜索项样式 */
+.search-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 用户名和邮件输入框 */
+.search-item:nth-child(1),
+.search-item:nth-child(2) {
+    flex: 1;
+    min-width: 150px;
+    max-width: 300px;
+    margin-right: 30px;
+}
+
+/* 权限和状态下拉框 */
+.search-item:nth-child(3),
+.search-item:nth-child(4) {
+    width: 150px;
+    flex: 0 0 auto;
+}
+
+.search-item:nth-child(3) select,
+.search-item:nth-child(4) select {
+    width: 150px;
+    padding: 8px 12px;
+}
+
+/* 搜索按钮 */
+.search-item:last-child {
+    flex: 0 0 auto;
+}
+
+.search-item label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+/* 表格容器 */
+.users-table-container {
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    overflow: auto;
+    max-height: calc(100vh - 250px);
+}
+
+/* 表头和内容的表格共同样式 */
+.table-header table,
+.table-content table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* 统一列宽 */
+.table-header th,
+.table-content td {
+    padding: 12px 16px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.table-header th:nth-child(1),
+.table-content td:nth-child(1) { width: 20%; }
+
+.table-header th:nth-child(2),
+.table-content td:nth-child(2) { width: 25%; }
+
+.table-header th:nth-child(3),
+.table-content td:nth-child(3) { width: 15%; }
+
+.table-header th:nth-child(4),
+.table-content td:nth-child(4) { width: 15%; }
+
+.table-header th:nth-child(5),
+.table-content td:nth-child(5) { width: 25%; }
+
+/* 表头样式 */
+.table-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--bg-sidebar);
+}
+
+/* 表头文字样式 */
+.table-header th {
+    padding: 12px 16px;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+/* 操作列表头居中 */
+.table-header th:last-child {
+    text-align: center;
+}
+
+/* 操作列内容也居中对齐 */
+.table-content td:last-child {
+    text-align: center;
+}
+
+/* 操作按钮容器居中 */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    white-space: nowrap;
+    justify-content: center;
+}
+
+/* 表格内容区域 */
+.table-content {
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
+}
+
+/* 滚动条样式 - 同时应用于容器和内容区域 */
+.users-table-container::-webkit-scrollbar,
+.table-content::-webkit-scrollbar {
+    width: 10px;         /* 增加滚动条宽度 */
+    height: 10px;
+}
+
+.users-table-container::-webkit-scrollbar-track,
+.table-content::-webkit-scrollbar-track {
+    background: #e0e0e0;  /* 更深的背景色 */
+    border-radius: 4px;
+}
+
+.users-table-container::-webkit-scrollbar-thumb,
+.table-content::-webkit-scrollbar-thumb {
+    background: #888;     /* 更深的滚动条颜色 */
+    border-radius: 4px;
+    border: 2px solid #e0e0e0;  /* 添加边框 */
+}
+
+.users-table-container::-webkit-scrollbar-thumb:hover,
+.table-content::-webkit-scrollbar-thumb:hover {
+    background: #666;     /* 悬停时更深的颜色 */
+}
+
+/* 确保表格内容可以滚动 */
+.table-content table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* 表格行样式 */
+.table-content tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 移除最后一行不显示边框的样式 */
+.table-content tr:last-child {
+    border-bottom: 1px solid var(--border-color);  /* 确保最后一行也有边框 */
+}
+
+/* 表格行悬停效果 */
+.table-content tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+/* 移除可能影响按钮定位的样式 */
+.table-content td {
+    position: relative;
+    vertical-align: middle;
+}
+
+/* 确保操作列中的按钮容器正确显示 */
+.table-content td:last-child {
+    padding: 8px 16px;
+}
+
+/* 移除之前可能存在的固定定位样式 */
+.action-buttons {
+    position: static;
+    bottom: auto;
+    right: auto;
+}
+
+/* 按钮样式 */
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.primary-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+/* 状态标签样式 */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-active {
+    background-color: #e8f5e8;
+    color: #2d662d;
+}
+
+.status-inactive {
+    background-color: #f5e8e8;
+    color: #662d2d;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .header-buttons {
+        width: 100%;
+    }
+    
+    .primary-btn,
+    .secondary-btn {
+        flex: 1;
+        text-align: center;
+    }
+    
+    th, td {
+        padding: 12px 8px;
+    }
+}
+
+/* 新建按钮容器 */
+.add-user-container {
+    margin-bottom: 15px;
+    display: block;
+}
+
+.add-user-btn {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: auto;
+    margin: 0;
+}
+
+.add-user-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.add-user-btn i {
+    font-size: 16px;
+}
+
+/* 操作按钮样式 */
+.edit-btn,
+.delete-btn {
+    padding: 3px 12px;
+    font-size: 13px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    height: 28px;
+}
+
+/* 移除search-area的样式 */
+.search-area {
+    border: none;
+    padding: 0;
+    background: none;
+    box-shadow: none;
+}
+
+/* 模态窗口背景 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* 模态窗口容器 */
+.modal-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 模态窗口标题 */
+.modal-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* 表单项样式 */
+.form-item {
+    margin-bottom: 15px;
+}
+
+.form-item label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-item input,
+.form-item select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+}
+
+/* 按钮容器 */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* 按钮样式 */
+.modal-buttons button {
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.confirm-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+.confirm-btn:hover {
+    background-color: var(--primary-hover);
+}
+
+.cancel-btn {
+    background-color: #f5f5f5;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.cancel-btn:hover {
+    background-color: #e5e5e5;
+}
+
+/* 显示模态窗口时的样式 */
+.modal-overlay.show {
+    display: flex;
+} 
