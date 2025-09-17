@@ -126,8 +126,13 @@ class SystemInit(GlobalResource):
             password_hash = generate_password_hash(current_app.config["INIT_PW"])
             user_data.update(password=password_hash)
             current_app.container.upsert_item(user_data)
+<<<<<<< HEAD
             logger.info("Password initialized successfully")
             return {'msg': 'success', 'code': 200}
+=======
+            return {'msg': 'success', 'code': 200}
+            logger.info("Password initialized successfully")
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         raise messages.UserNotExistsError
 
 

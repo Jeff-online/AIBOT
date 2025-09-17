@@ -16,7 +16,11 @@ class UserArgsParser(BaseArgsParser):
 class UserInfoParser(BaseArgsParser):
     def __init__(self):
         super().__init__()
+<<<<<<< HEAD
         self.parser.add_argument('username', type=str, required=True)
+=======
+        self.parser.add_argument('nick_id', type=str, required=True)
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         self.parser.add_argument('new_password', type=str, help='新しいパスワードをご確認ください')
 
     @staticmethod

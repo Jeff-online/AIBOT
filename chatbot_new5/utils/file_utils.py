@@ -13,6 +13,7 @@ from flask import current_app
 class FileOperation:
 
     @staticmethod
+<<<<<<< HEAD
     def extract_images_from_pdf(pdf_path, is_content):
         if not is_content:
             return []
@@ -31,19 +32,46 @@ class FileOperation:
                 #     img = base64.b64encode(buffered.getvalue()).decode()
                 #     base64_img.append(img)
                 # else:
-                page = doc[page_index]
-                pix = page.get_pixmap(dpi=500)
-                img = Image.open(io.BytesIO(pix.tobytes("png")))
-                buffered = io.BytesIO()
-                img.save(buffered, format="PNG")
-                img = base64.b64encode(buffered.getvalue()).decode()
-                base64_img.append(img)
+                # page = doc[page_index]
+                # pix = page.get_pixmap(dpi=500)
+                # img = Image.open(io.BytesIO(pix.tobytes("png")))
+                # buffered = io.BytesIO()
+                # img.save(buffered, format="PNG")
+                # img = base64.b64encode(buffered.getvalue()).decode()
+                # base64_img.append(img)
+                # 建议改 dpi 为 150 或用缩放矩阵控制分辨率
+                pix = page.get_pixmap(dpi=150)
+
+                # 直接拿 PNG 字节，不要再二次转换
+                img_bytes = pix.tobytes("png")
+
+                # 转 base64
+                img_b64 = base64.b64encode(img_bytes).decode()
+                base64_img.append(img_b64)
+=======
+    def extract_images_from_pdf(pdf_path):
+        with fitz.open(stream=pdf_path) as doc:
+            base64_img = []
+            for page_index in range(len(doc)):
+                if img:= doc[page_index].get_images(full=True):
+                    xref = img[-1][0]
+                    base_image = doc.extract_image(xref)
+                    image_bytes = base_image["image"]
+                    img = Image.open(io.BytesIO(image_bytes))
+                    buffered = io.BytesIO()
+                    img.save(buffered, format="PNG")
+                    img = base64.b64encode(buffered.getvalue()).decode()
+                    base64_img.append(img)
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         return base64_img
 
     @staticmethod
     def extract_text_from_pdf(pdf_path):
         pdf_bytes = io.BytesIO(pdf_path)
+<<<<<<< HEAD
         is_content = []
+=======
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         final_text = []
         tables = []
         df = ""
@@ -64,10 +92,15 @@ class FileOperation:
                             final_text.append(word["text"])
                 else:
                     text = page.extract_text()
+<<<<<<< HEAD
                     if text and len(text) > 10:
                         final_text.append(text)
                     else:
                         is_content.append(page.page_number - 1)
+=======
+                    if text:
+                        final_text.append(text)
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
             if tables:
                 try:
                     df = "\n".join(pd.DataFrame(table[1:], columns=table[0]).to_json(force_ascii=False) for table in tables)
@@ -77,7 +110,11 @@ class FileOperation:
                 final_text = " ".join(final_text) + "\n"
             else:
                 final_text = ""
+<<<<<<< HEAD
         return final_text + df, is_content
+=======
+        return final_text + df
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
 
     @staticmethod
     def extract_text_from_word(docx_path):
@@ -110,8 +147,14 @@ class FileOperation:
                 img = Image.open(io.BytesIO(image))
                 buffered = io.BytesIO()
                 img.save(buffered, format="PNG")
+<<<<<<< HEAD
+                # save pages
+                img_b64 = base64.b64encode(buffered.getvalue()).decode()
+                base64_img.append(img_b64)
+=======
                 base64.b64encode(buffered.getvalue()).decode()
                 base64_img.append(img)
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         return base64_img
 
     @staticmethod
@@ -124,9 +167,13 @@ class FileOperation:
                     rect = page.rect
                     page.clean_contents()
                     page.insert_image(rect, pixmap=pix)
+<<<<<<< HEAD
             pdf_buffer = io.BytesIO()
             doc.save(pdf_buffer, garbage=4, deflate=True)
             pdf_byte_path = pdf_buffer.getvalue()
+=======
+            pdf_byte_path = doc.write()
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         return pdf_byte_path
 
     @staticmethod
@@ -139,6 +186,99 @@ class FileOperation:
         base64_img.append(img)
         return base64_img
 
+<<<<<<< HEAD
+    def __call__(self, username: str, attachment_names: list):
+        if not isinstance(attachment_names, list):
+            return {"message": "Invalid attachment_names format", "status": 400}
+        else:
+            results = {}
+            for attachment_name in attachment_names:
+                file_extension = attachment_name.rsplit(".", 1)[1].lower()
+                blob_client = current_app.container_client.get_blob_client(f"{username}/{attachment_name}")
+                stream = blob_client.download_blob().readall()
+                file_stream = io.BytesIO(stream)
+                encoding = chardet.detect(stream)["encoding"]
+
+                if file_extension == "txt":
+                    results[attachment_name] = {
+                        "text": stream.decode(encoding),
+                        "images": []
+                    }
+
+                elif file_extension == "csv":
+                    df = pd.read_csv(file_stream, encoding=encoding)
+                    results[attachment_name] = {
+                        "text": df.to_json(force_ascii=False),
+                        "images": []
+                    }
+
+                elif file_extension == "json":
+                    results[attachment_name] = {
+                        "text": stream.decode(encoding),
+                        "images": []
+                    }
+
+                elif file_extension in ["xlsx", "xls"]:
+                    try:
+                        if file_extension == "xlsx":
+                            df = pd.read_excel(file_stream, engine="openpyxl")
+                        elif file_extension == "xls":
+                            # 需要安装 pip install xlrd==1.2.0
+                            df = pd.read_excel(file_stream, engine="xlrd")
+                        else:
+                            raise ValueError("Unsupported Excel file type")
+                        results[attachment_name] = {
+                            "text": df.to_json(force_ascii=False),
+                            "images": []
+                        }
+                    except Exception as e:
+                        results[attachment_name] = {
+                            "text": f"Failed to read Excel file: {str(e)}",
+                            "images": []
+                        }
+
+                # elif file_extension == "pdf":
+                #     pdf_text, page_num = self.extract_text_from_pdf(stream)
+                #     pdf_images = self.extract_images_from_pdf(stream, page_num)
+                #     results[attachment_name] = {
+                #         "text": pdf_text,
+                #         "images": pdf_images
+                #     }
+                elif file_extension == "pdf":
+                    pdf_stream = io.BytesIO(stream)  # 二进制转 BytesIO
+                    pdf_text, page_num = self.extract_text_from_pdf(stream)
+                    pdf_images = self.extract_images_from_pdf(pdf_stream, page_num)
+                    results[attachment_name] = {
+                        "text": pdf_text,
+                        "images": pdf_images
+                    }
+
+                elif file_extension == "docx":
+                    word_text = self.extract_text_from_word(file_stream)
+                    try:
+                        word_images = self.extract_images_from_word(file_stream)
+                    except:
+                        word_images = []
+                    results[attachment_name] = {
+                        "text": word_text,
+                        "images": word_images
+                    }
+
+                elif file_extension in ["jpg", "jpeg", "png"]:
+                    images = self.extract_picture(file_stream)
+                    results[attachment_name] = {
+                        "text": "",
+                        "images": images
+                    }
+
+                else:
+                    results[attachment_name] = {
+                        "text": f"Unsupported file type: {file_extension}",
+                        "images": []
+                    }
+
+        return results
+=======
     def __call__(self, username:str, attachment_name:str):
         file_extension = attachment_name.rsplit(".", 1)[1]
         file_extension = file_extension.lower()
@@ -160,9 +300,9 @@ class FileOperation:
             df = pd.read_excel(file_stream, engine="openpyxl")
             return [df.to_json(force_ascii=False), []]
         elif file_extension == "pdf":
-            # stream_result = self.check_pdf(stream)
-            pdf_text, page_num = self.extract_text_from_pdf(stream)
-            pdf_images = self.extract_images_from_pdf(stream, page_num)
+            stream_result = self.check_pdf(stream)
+            pdf_text = self.extract_text_from_pdf(stream_result)
+            pdf_images = self.extract_images_from_pdf(stream_result)
             return [pdf_text, pdf_images]
         elif file_extension == "docx":
             word_text = self.extract_text_from_word(file_stream)
@@ -174,6 +314,7 @@ class FileOperation:
         elif file_extension in ["jpg", "jpeg", "png"]:
             images = self.extract_picture(file_stream)
             return ["", images]
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
 
 
 if __name__ == '__main__':

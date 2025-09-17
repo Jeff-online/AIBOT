@@ -58,7 +58,11 @@ class SessionPutParser(SessionAddParser):
     def __init__(self):
         super().__init__()
         self.parser.add_argument('prompt_name', type=str, help="プロンプトファイル名")
+<<<<<<< HEAD
+        self.parser.add_argument('attachment_name', type=str, action="append", help="添付ファイル名")
+=======
         self.parser.add_argument('attachment_name', type=str, help="添付ファイル名")
+>>>>>>> cd8073d3ef5377a3d9b39e106509c2995dd4429d
         self.parser.add_argument('content', type=str, help="セッションの内容をご確認ください")
         self.parser.add_argument('session_id', type=str)
 
